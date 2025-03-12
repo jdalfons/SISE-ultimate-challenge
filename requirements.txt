@@ -1,3 +1,10 @@
-transformers 
-torch 
+transformers
+datasets
+torchaudio
+torch
 librosa
+soundfile
+numpy
+pandas
+matplotlib
+scikit-learn

@@ -1,62 +1,43 @@
-from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 import torch
-import librosa
-import numpy as np
-import matplotlib.pyplot as plt
+import torch.optim as optim
+import torch.nn as nn
+from torch.utils.data import DataLoader
+from transformers import Wav2Vec2Processor
+from emotion_dataset import EmotionDataset
+from model import Wav2Vec2EmotionClassifier
 
-# Charger le modèle et le processeur Wav2Vec 2.0
-model_name = "facebook/wav2vec2-large-960h"
-processor = Wav2Vec2Processor.from_pretrained(model_name)
-model = Wav2Vec2ForCTC.from_pretrained(model_name)
+# Charger le processeur et le dataset
+processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-xlsr-53")
+dataset = EmotionDataset("data/dataset.csv", processor)
+dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
 
-# Charger l'audio
-audio_file = "path_to_audio_file.wav"
-y, sr = librosa.load(audio_file, sr=16000)  # Assurez-vous que le sample rate est 16kHz
+# Initialiser le modèle
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = Wav2Vec2EmotionClassifier().to(device)
 
-# Prétraiter l'audio avec le processeur Wav2Vec 2.0
-input_values = processor(y, return_tensors="pt").input_values
+# Définir la fonction de perte et l'optimiseur
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.AdamW(model.parameters(), lr=5e-5)
 
-# Obtenir la prédiction (logits)
-with torch.no_grad():
-    logits = model(input_values).logits
+# Entraînement du modèle
+num_epochs = 10
+for epoch in range(num_epochs):
+    model.train()
+    total_loss = 0
 
-# Obtenir les IDs des tokens prédits (transcription)
-predicted_ids = torch.argmax(logits, dim=-1)
+    for inputs, labels in dataloader:
+        inputs, labels = inputs.to(device), labels.to(device)
 
-# Décoder les IDs pour obtenir le texte transcrit
-transcription = processor.decode(predicted_ids[0])
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
 
-print("Transcription:", transcription)
+        total_loss += loss.item()
 
+    print(f"Epoch {epoch+1}, Loss: {total_loss:.4f}")
 
-# Extraire le pitch (hauteur tonale) et l'intensité
-pitch, magnitudes = librosa.core.piptrack(y=y, sr=sr)
-intensity = librosa.feature.rms(y=y)  # Intensité (volume)
-
-# Calculer le tempo (vitesse de parole)
-tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
-
-# Affichage du pitch
-plt.figure(figsize=(10, 6))
-librosa.display.specshow(pitch, x_axis='time', y_axis='log')
-plt.colorbar()
-plt.title("Pitch (Hauteur Tonale)")
-plt.show()
-
-# Affichage de l'intensité
-plt.figure(figsize=(10, 6))
-librosa.display.specshow(intensity, x_axis='time')
-plt.colorbar()
-plt.title("Intensité")
-plt.show()
-
-# Fusionner la transcription avec les caractéristiques prosodiques (pitch, intensité, tempo)
-features = np.hstack([
-    np.mean(intensity, axis=1),  # Moyenne de l'intensité
-    np.mean(pitch, axis=1),  # Moyenne du pitch
-    tempo  # Tempo
-])
-
-# Afficher les caractéristiques extraites
-print("Caractéristiques combinées :")
-print(features)
+# Sauvegarde du modèle
+torch.save(model.state_dict(), "wav2vec2_emotion.pth")
+print("Modèle sauvegardé !")
