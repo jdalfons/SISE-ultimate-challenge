@@ -1,4 +1,5 @@
 import streamlit as st
+from st_audiorec import st_audiorec
 import datetime
 import os
 
@@ -17,24 +18,27 @@ def application():
     
     st.markdown("---")
     
-    tab1, tab2 = st.tabs(["Record Audio", "Register Audio"])
+    tab1, tab2 = st.tabs(["⬆️ Record Audio", "🔈  Register Audio"])
 
     with tab1:
-        st.header("Record Audio")
+        st.header("⬆️ Upload Audio")
         st.write("Here you can record audio.")
         audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "ogg"])
         if audio_file is not None:
             
-            with open(f"audios/{FILE_NAME}", "wb") as f:
+            with open(f"{DIRECTORY}/{FILE_NAME}", "wb") as f:
                 f.write(audio_file.getbuffer())
                 st.success(f"Saved file: {FILE_NAME}")
 
     with tab2:
-        st.header("Register Audio")
+        st.header("🔈 Realtime Audio")
         st.write("Here you can register audio.")
         
+        if st.button("Register", key="register-button"):
+            st.success("Audio registered successfully.")
 
-    file = os.path.join(DIRECTORY, FILE_NAME)
-    if os.path.exists(file):
-        st.markdown("## File registered:")
-        audio_data = st.audio(file, format='audio/wav', start_time=0)
+        wav_audio_data = st_audiorec()
+
+        if wav_audio_data is not None:
+            st.audio(wav_audio_data, format='audio/wav')
+            
