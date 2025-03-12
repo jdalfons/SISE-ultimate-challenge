@@ -8,3 +8,9 @@ numpy
 pandas
 matplotlib
 scikit-learn
+streamlit
+streamlit_option_menu
+torchaudio
+huggingface
+huggingface_hub
+pyaudio
