@@ -18,7 +18,7 @@ def application():
     
     st.markdown("---")
     
-    tab1, tab2 = st.tabs(["⬆️ Record Audio", "🔈  Register Audio"])
+    tab1, tab2 = st.tabs(["⬆️ Record Audio", "🔈 Realtime Audio"])
 
     with tab1:
         st.header("⬆️ Upload Audio")
