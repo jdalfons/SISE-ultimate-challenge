@@ -25,6 +25,6 @@ def predict_emotion(audio_path):
     return emotion_labels[predicted_label]
 
 # Exemple d'utilisation
-audio_test = "data/audio1.wav"
+audio_test = "data/n1ac.wav"
 emotion = predict_emotion(audio_test)
 print(f"Émotion détectée : {emotion}")

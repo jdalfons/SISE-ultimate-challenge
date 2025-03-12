@@ -4,12 +4,20 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from transformers import Wav2Vec2Processor
 from emotion_dataset import EmotionDataset
-from model import Wav2Vec2EmotionClassifier
+from emotion_classifier import Wav2Vec2EmotionClassifier
+import os
+from utils import collate_fn
+
 
 # Charger le processeur et le dataset
-processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-xlsr-53")
-dataset = EmotionDataset("data/dataset.csv", processor)
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
+processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-xlsr-53-french")
+data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "dataset.csv"))
+if not os.path.exists(data_path):
+    raise FileNotFoundError(f"Le fichier {data_path} est introuvable.")
+
+dataset = EmotionDataset(data_path, processor)
+dataloader = DataLoader(dataset, batch_size=4, shuffle=True, collate_fn=collate_fn)  # collate_fn ajouté
+
 
 # Initialiser le modèle
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
