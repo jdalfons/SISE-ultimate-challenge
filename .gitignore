@@ -177,6 +177,7 @@ cython_debug/
 dataset/
 old/
 *.wav
+data/*
 
 # Mac
 .DS_Store
