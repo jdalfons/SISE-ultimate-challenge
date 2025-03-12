@@ -1,0 +1,9 @@
+streamlit
+streamlit_option_menu
+torch<=2.3
+torchaudio
+huggingface
+huggingface_hub
+numpy<=1.26.4
+pyaudio
+transformers
