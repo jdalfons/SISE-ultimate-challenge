@@ -172,4 +172,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+#Custom
+dataset/
+old/
+*.wav
 data/*
+
+# Mac
+.DS_Store
