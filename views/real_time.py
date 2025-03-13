@@ -10,7 +10,7 @@ from transformers import Wav2Vec2ForSequenceClassification, Wav2Vec2Processor
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-from src.model.predict import predict_emotion
+from predict import predict_emotion
 
 # Charger le modèle Wav2Vec2 pour la classification des émotions
 model_name = "superb/wav2vec2-base-superb-er"  # Exemple de modèle pour la reconnaissance des émotions

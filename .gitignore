@@ -183,4 +183,4 @@ data/*
 
 # Mac
 .DS_Store
-*.pth
+.idea

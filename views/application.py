@@ -6,7 +6,7 @@ import os
 import matplotlib.pyplot as plt
 import librosa
 from src.model.transcriber import transcribe_audio
-from src.model.predict import predict_emotion
+from predict import predict_emotion
 
 
 DIRECTORY = "audios"
