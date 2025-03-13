@@ -60,7 +60,7 @@ def load_audio_data(data_dir):
                 data.append({"path": file_path, "label": label_id})
     return Dataset.from_list(data)
 
-# Chargement du dataset-------------------------------------------------------------------------------------
+# Chargement du dataset
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
 ds = load_audio_data(data_dir)
 
@@ -156,7 +156,7 @@ def train_classifier(feature_extractor, classifier, train_ds, test_ds, epochs=20
                 "classifier_state_dict": classifier.state_dict(),
                 "feature_extractor_state_dict": feature_extractor.state_dict(),
                 "processor": processor
-            }, "best_emotion_model.pth")
+            }, "acc_model.pth")
             print(f"✅ Nouveau meilleur modèle sauvegardé ! Accuracy: {best_accuracy:.4f}")
 
         print(f"Epoch {epoch+1}/{epochs} - Loss: {total_loss/batch_count:.4f} - Accuracy: {train_acc:.4f}")
