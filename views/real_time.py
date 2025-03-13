@@ -86,64 +86,51 @@ if start_button:
 ### Real time prediction for uploaded audio file
 ###############################
 # Charger le modèle wav2vec et le processeur
-model = Wav2Vec2ForSequenceClassification.from_pretrained("your_emotion_model_path")
-processor = Wav2Vec2Processor.from_pretrained("your_emotion_model_path")
 
-# Définir les émotions
-emotions = ["neutre", "joie", "colère", "tristesse"]  # Ajustez selon votre modèle
+# # Configuration Streamlit
+# st.title("Analyse des émotions en temps réel")
+# uploaded_file = st.file_uploader("Choisissez un fichier audio", type=["wav", "mp3"])
 
-# Fonction pour prédire l'émotion
-# def predict_emotion(audio_chunk):
-#     inputs = processor(audio_chunk, sampling_rate=16000, return_tensors="pt", padding=True)
-#     with torch.no_grad():
-#         logits = model(**inputs).logits
-#     scores = torch.softmax(logits, dim=1).squeeze().tolist()
-#     return dict(zip(emotions, scores))
-
-# Configuration Streamlit
-st.title("Analyse des émotions en temps réel")
-uploaded_file = st.file_uploader("Choisissez un fichier audio", type=["wav", "mp3"])
-
-if uploaded_file is not None:
-    # Charger et rééchantillonner l'audio
-    audio, sr = librosa.load(uploaded_file, sr=16000)
+# if uploaded_file is not None:
+#     # Charger et rééchantillonner l'audio
+#     audio, sr = librosa.load(uploaded_file, sr=16000)
     
-    # Paramètres de la fenêtre glissante
-    window_size = 1  # en secondes
-    hop_length = 0.5  # en secondes
+#     # Paramètres de la fenêtre glissante
+#     window_size = 1  # en secondes
+#     hop_length = 0.5  # en secondes
     
-    # Créer un graphique en temps réel
-    fig, ax = plt.subplots()
-    lines = [ax.plot([], [], label=emotion)[0] for emotion in emotions]
-    ax.set_ylim(0, 1)
-    ax.set_xlim(0, len(audio) / sr)
-    ax.set_xlabel("Temps (s)")
-    ax.set_ylabel("Probabilité")
-    ax.legend()
+#     # Créer un graphique en temps réel
+#     fig, ax = plt.subplots()
+#     lines = [ax.plot([], [], label=emotion)[0] for emotion in emotions]
+#     ax.set_ylim(0, 1)
+#     ax.set_xlim(0, len(audio) / sr)
+#     ax.set_xlabel("Temps (s)")
+#     ax.set_ylabel("Probabilité")
+#     ax.legend()
     
-    chart = st.pyplot(fig)
+#     chart = st.pyplot(fig)
     
-    # Traitement par fenêtre glissante
-    for i in range(0, len(audio), int(hop_length * sr)):
-        chunk = audio[i:i + int(window_size * sr)]
-        if len(chunk) < int(window_size * sr):
-            break
+#     # Traitement par fenêtre glissante
+#     for i in range(0, len(audio), int(hop_length * sr)):
+#         chunk = audio[i:i + int(window_size * sr)]
+#         if len(chunk) < int(window_size * sr):
+#             break
         
-        emotion_scores = predict_emotion(chunk, output_probs=False, sampling_rate=RATE)
+#         emotion_scores = predict_emotion(chunk, output_probs=False, sampling_rate=RATE)
         
-        # Mettre à jour le graphique
-        for emotion, line in zip(emotions, lines):
-            xdata = line.get_xdata().tolist()
-            ydata = line.get_ydata().tolist()
-            xdata.append(i / sr)
-            ydata.append(emotion_scores[emotion])
-            line.set_data(xdata, ydata)
+#         # Mettre à jour le graphique
+#         for emotion, line in zip(emotions, lines):
+#             xdata = line.get_xdata().tolist()
+#             ydata = line.get_ydata().tolist()
+#             xdata.append(i / sr)
+#             ydata.append(emotion_scores[emotion])
+#             line.set_data(xdata, ydata)
         
-        ax.relim()
-        ax.autoscale_view()
-        chart.pyplot(fig)
+#         ax.relim()
+#         ax.autoscale_view()
+#         chart.pyplot(fig)
         
-    st.success("Analyse terminée !")
+#     st.success("Analyse terminée !")
 
 
 

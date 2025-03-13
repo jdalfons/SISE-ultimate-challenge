@@ -178,6 +178,7 @@ dataset/
 old/
 *.wav
 data/*
+*.pth
 
 # Mac
 .DS_Store

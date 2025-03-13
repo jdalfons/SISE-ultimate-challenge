@@ -3,6 +3,9 @@ from streamlit_option_menu import option_menu
 from views.application import application
 from views.about import about
 
+if "model_loaded" not in st.session_state:
+    st.session_state.model_loaded = None
+
 # Set the logo
 st.sidebar.image("img/logo.png", use_container_width=True)
 
