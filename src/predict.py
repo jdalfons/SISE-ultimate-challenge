@@ -1,9 +1,11 @@
+import sys
+import os
 import torch
 import librosa
 import numpy as np
-from model.emotion_classifier import EmotionClassifier
-from utils.preprocessing import collate_fn
-from config import DEVICE, NUM_LABELS
+from src.model.emotion_classifier import EmotionClassifier
+from src.utils.preprocessing import collate_fn
+from src.config import DEVICE, NUM_LABELS
 import os
 
 # Charger le modèle entraîné

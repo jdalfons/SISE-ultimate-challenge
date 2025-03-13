@@ -3,8 +3,8 @@ import soundfile as sf
 import torch
 import torchaudio
 import numpy as np
-from model.feature_extractor import processor  # type: ignore
-from config import DEVICE
+from src.model.feature_extractor import processor  # type: ignore
+from src.config import DEVICE
 
 # Resampler pour convertir en 16kHz
 resampler = torchaudio.transforms.Resample(orig_freq=48_000, new_freq=16_000)
@@ -43,7 +43,7 @@ def prepare_features(batch, max_length):
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=40)
 
     # Debugging: afficher la forme des MFCCs
-    print(f"MFCC original shape: {mfcc.shape}")
+    # print(f"MFCC original shape: {mfcc.shape}")
 
     # Ajuster la longueur des MFCCs
     if mfcc.shape[1] > max_length:
@@ -52,7 +52,7 @@ def prepare_features(batch, max_length):
         pad_width = max_length - mfcc.shape[1]
         mfcc = np.pad(mfcc, pad_width=((0, 0), (0, pad_width)), mode='constant')  # Padding si trop court
 
-    print(f"MFCC padded shape: {mfcc.shape}")
+    # print(f"MFCC padded shape: {mfcc.shape}")
 
     # Convertir en tensor PyTorch et stocker
     batch["input_values"] = torch.tensor(mfcc.T, dtype=torch.float32)  # Transposer pour obtenir (max_length, 40)

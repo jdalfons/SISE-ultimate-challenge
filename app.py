@@ -3,6 +3,11 @@ from streamlit_option_menu import option_menu
 from views.studio import studio
 from views.emotion_analysis import emotion_analysis
 from views.about import about
+import os
+import sys
+
+sys.path.append(os.path.abspath("src"))
+sys.path.append(os.path.abspath(".")) 
 
 if "model_loaded" not in st.session_state:
     st.session_state.model_loaded = None
