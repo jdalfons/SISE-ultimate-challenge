@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.idea/
 
 # C extensions
 *.so
@@ -182,3 +183,4 @@ data/*
 
 # Mac
 .DS_Store
+*.pth
