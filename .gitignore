@@ -184,3 +184,4 @@ data/*
 # Mac
 .DS_Store
 .idea
+wav2vec2_emotion/

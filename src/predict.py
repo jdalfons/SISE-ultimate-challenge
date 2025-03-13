@@ -3,10 +3,9 @@ import os
 import torch
 import librosa
 import numpy as np
-from src.model.emotion_classifier import EmotionClassifier
-from src.utils.preprocessing import collate_fn
-from src.config import DEVICE, NUM_LABELS, BEST_MODEL_NAME
-import os
+from model.emotion_classifier import EmotionClassifier
+from utils.preprocessing import collate_fn
+from config import DEVICE, NUM_LABELS, BEST_MODEL_NAME
 
 # Charger le modèle entraîné
 feature_dim = 40  # Nombre de MFCCs utilisés
@@ -14,7 +13,10 @@ model = EmotionClassifier(feature_dim, NUM_LABELS).to(DEVICE)
 model.load_state_dict(torch.load(BEST_MODEL_NAME, map_location=DEVICE))
 model.eval()  # Mode évaluation
 
-# Fonction pour prédire l’émotion d’un fichier audio
+# Labels des émotions
+LABELS = {0: "colère", 1: "neutre", 2: "joie"}
+
+# Fonction pour prédire l’émotion d’un fichier audio avec probabilités
 def predict_emotion(audio_path, max_length=128):
     # Charger l’audio
     y, sr = librosa.load(audio_path, sr=16000)
@@ -35,17 +37,21 @@ def predict_emotion(audio_path, max_length=128):
     # Prédiction avec le modèle
     with torch.no_grad():
         logits = model(input_tensor)
+        probabilities = torch.nn.functional.softmax(logits, dim=-1).cpu().numpy().flatten()  # Convertir en probabilités
         predicted_class = torch.argmax(logits, dim=-1).item()
 
-    # Définition des labels
-    LABELS = {0: "colère", 1: "neutre", 2: "joie"}
-    return LABELS[predicted_class]
+    # Associer les probabilités aux labels
+    probabilities_dict = {LABELS[i]: float(probabilities[i]) for i in range(NUM_LABELS)}
 
-    
+    return LABELS[predicted_class], probabilities_dict
 
-#Exemple d'utilisation
+
+# Exemple d'utilisation
 if __name__ == "__main__":
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
     audio_file = os.path.join(base_path, "colere", "c1ac.wav")
-    emotion = predict_emotion(audio_file)
-    print(f"🎤 L'émotion prédite est : {emotion}")
+
+    predicted_emotion, probabilities = predict_emotion(audio_file)
+
+    print(f"🎤 L'émotion prédite est : {predicted_emotion}")
+    print(f"📊 Probabilités par classe : {probabilities}")
