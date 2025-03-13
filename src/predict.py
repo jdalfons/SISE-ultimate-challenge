@@ -1,63 +1,50 @@
 import torch
-import torchaudio
 import librosa
-import soundfile as sf
 import numpy as np
-from src.model.emotion_classifier import EmotionClassifier
-from src.model.feature_extractor import feature_extractor, processor
-from src.utils.preprocessing import resampler
-from src.config import DEVICE, LABELS
+from model.emotion_classifier import EmotionClassifier
+from utils.preprocessing import collate_fn
+from config import DEVICE, NUM_LABELS
 import os
 
+# Charger le modèle entraîné
+MODEL_PATH = "acc_model.pth"
+feature_dim = 40  # Nombre de MFCCs utilisés
+model = EmotionClassifier(feature_dim, NUM_LABELS).to(DEVICE)
+model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+model.eval()  # Mode évaluation
 
-# Charger le modèle sauvegardé
-classifier = EmotionClassifier(feature_extractor.config.hidden_size, len(LABELS)).to(DEVICE)
-classifier.load_state_dict(torch.load(os.path.join("src","model","best_emotion_model.pth"), map_location=torch.device(DEVICE)), strict=False)
-classifier.eval()
+# Fonction pour prédire l’émotion d’un fichier audio
+def predict_emotion(audio_path, max_length=128):
+    # Charger l’audio
+    y, sr = librosa.load(audio_path, sr=16000)
 
+    # Extraire les MFCCs
+    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=40)
 
-# Fonction de prédiction
-def predict_emotion(speech, output_probs=False, sampling_rate=16000):
-    # Charger l'audio
-    # waveform, sample_rate = librosa.load(speech, sr=None)
-    # speech_audio, sample_rate = sf.read(speech, dtype="float32")
-
-    # Rééchantillonnage si nécessaire
-    # if sample_rate != sampling_rate:
-    #     speech = torch.tensor(speech).unsqueeze(0)
-    #     speech = resampler(speech).squeeze(0).numpy()
-
-    # Extraire les features
-    inputs = processor(speech, sampling_rate=sampling_rate, return_tensors="pt", padding=True)
-    input_values = inputs.input_values.to(DEVICE)
-
-    with torch.no_grad():
-        features = feature_extractor(input_values).last_hidden_state.mean(dim=1)
-        logits = classifier(features)
-
-    if output_probs:        
-        # Appliquer softmax pour obtenir des probabilités
-        probabilities = torch.nn.functional.softmax(logits, dim=-1)
-        
-        # Convertir en numpy array et prendre le premier (et seul) élément
-        probabilities = probabilities[0].detach().cpu().numpy()
-        
-        # Créer un dictionnaire associant chaque émotion à sa probabilité
-        emotion_probabilities = {emotion: prob for emotion, prob in zip(LABELS, probabilities)}
-        # emotion_probabilities = {"emotions": [emotion for emotion in emotion_labels],
-        #                          "probabilities": [prob for prob in probabilities]}
-        return emotion_probabilities
+    # Ajuster la taille des MFCCs avec padding/troncature
+    if mfcc.shape[1] > max_length:  
+        mfcc = mfcc[:, :max_length]  # Tronquer si trop long
     else:
-        # Obtenir l'émotion la plus probable (i.e. la prédiction)
-        predicted_label = torch.argmax(logits, dim=-1).item()
-        emotion = LABELS[predicted_label]
+        pad_width = max_length - mfcc.shape[1]
+        mfcc = np.pad(mfcc, pad_width=((0, 0), (0, pad_width)), mode='constant')
 
-        return emotion
+    # Convertir en tenseur PyTorch
+    input_tensor = torch.tensor(mfcc.T, dtype=torch.float32).unsqueeze(0).to(DEVICE)  # (1, max_length, 40)
+
+    # Prédiction avec le modèle
+    with torch.no_grad():
+        logits = model(input_tensor)
+        predicted_class = torch.argmax(logits, dim=-1).item()
+
+    # Définition des labels
+    LABELS = {0: "colère", 1: "neutre", 2: "joie"}
+    return LABELS[predicted_class]
+
     
 
-# Exemple d'utilisation
-# if __name__ == "__main__":
-#     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
-#     audio_file = os.path.join(base_path, "colere", "c1ac.wav")
-#     emotion = predict_emotion(audio_file)
-#     print(f"🎤 L'émotion prédite est : {emotion}")
+#Exemple d'utilisation
+if __name__ == "__main__":
+    base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
+    audio_file = os.path.join(base_path, "colere", "c1ac.wav")
+    emotion = predict_emotion(audio_file)
+    print(f"🎤 L'émotion prédite est : {emotion}")

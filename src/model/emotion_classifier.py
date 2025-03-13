@@ -22,11 +22,14 @@ import torch.nn as nn
 class EmotionClassifier(nn.Module):
     def __init__(self, feature_dim, num_labels=3):
         super(EmotionClassifier, self).__init__()
-        self.fc = nn.Linear(feature_dim.config.hidden_size, num_labels)
-        self.softmax = nn.Softmax(dim=1)
+        self.fc = nn.Linear(feature_dim, num_labels)
+        self.dropout = nn.Dropout(0.3)  # Evite l'overfitting
 
-    def forward(self, input_values):
-        outputs = self(input_values).last_hidden_state
-        pooled_output = torch.mean(outputs, dim=1)  
+    def forward(self, x):
+        pooled_output = torch.mean(x, dim=1)  # Moyenne des features audio
+        pooled_output = self.dropout(pooled_output)  # Dropout avant classification
         logits = self.fc(pooled_output)
-        return self.softmax(logits)
+        return logits  
+
+
+
