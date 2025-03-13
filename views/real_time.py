@@ -10,27 +10,12 @@ from transformers import Wav2Vec2ForSequenceClassification, Wav2Vec2Processor
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-from predict import predict_emotion
-
-# Charger le modèle Wav2Vec2 pour la classification des émotions
-model_name = "superb/wav2vec2-base-superb-er"  # Exemple de modèle pour la reconnaissance des émotions
-processor = Wav2Vec2Processor.from_pretrained(model_name)
-model = Wav2Vec2ForSequenceClassification.from_pretrained(model_name)
 
 # Paramètres audio
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
-
-# Fonction pour prédire l'émotion à partir d'un segment audio
-# def predict_emotion(audio_data):
-#     inputs = processor(audio_data, sampling_rate=RATE, return_tensors="pt", padding=True)
-#     with torch.no_grad():
-#         logits = model(**inputs).logits
-#     predicted_id = torch.argmax(logits, dim=-1).item()
-#     emotion = model.config.id2label[predicted_id]
-#     return emotion
 
 # Interface Streamlit
 st.title("Détection des émotions en temps réel")

@@ -11,6 +11,7 @@ if not HF_API_KEY:
 
 # Labels d'émotions
 LABELS = {"colere": 0, "neutre": 1, "joie": 2}
+LABELS = ["colere", "neutre", "joie"]
 NUM_LABELS = len(LABELS)
 
 # Choisir le device

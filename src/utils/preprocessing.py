@@ -2,8 +2,8 @@ import soundfile as sf
 import torch
 import torchaudio
 import numpy as np
-from model.feature_extrator import processor
-from config import DEVICE
+from src.model.feature_extractor import processor # type: ignore
+from src.config import DEVICE
 
 # Resampler
 resampler = torchaudio.transforms.Resample(orig_freq=48_000, new_freq=16_000)

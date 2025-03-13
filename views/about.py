@@ -15,7 +15,7 @@ def about():
         st.markdown("### Collaborators")
         st.write("""
         - [Falonne Kpamegan](https://github.com/marinaKpamegan)
-        - [Nancy](https://github.com/yminanc)
-        - [Cyril](https://github.com/Cyr-CK)
+        - [Nancy Randriamiarijaona](https://github.com/yminanc)
+        - [Cyril Kocab](https://github.com/Cyr-CK)
         - [Juan Alfonso](https://github.com/jdalfons)
         """)

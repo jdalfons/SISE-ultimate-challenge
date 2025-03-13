@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from views.application import application
+from views.studio import studio
+from views.emotion_analysis import emotion_analysis
 from views.about import about
 
 if "model_loaded" not in st.session_state:
@@ -17,8 +18,8 @@ with st.sidebar:
     # Navigation menu with icons
     selected_tab = option_menu(
         menu_title=None,  # Added menu_title parameter
-        options=["Application", "About"],
-        icons=["robot", "bar-chart", "robot"],
+        options=["Studio", "Emotion Analysis", "About"],
+        icons=["record-circle", "robot", "info-circle"],
         menu_icon="cast",
         default_index=0,
         # styles={
@@ -30,8 +31,10 @@ with st.sidebar:
     )
     
     
-if selected_tab == "Application":
-    application()
+if selected_tab == "Studio":
+    studio()
+elif selected_tab == "Emotion Analysis":
+    emotion_analysis()
 elif selected_tab == "About":
     about()
         
