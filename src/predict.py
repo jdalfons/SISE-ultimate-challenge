@@ -5,14 +5,13 @@ import librosa
 import numpy as np
 from src.model.emotion_classifier import EmotionClassifier
 from src.utils.preprocessing import collate_fn
-from src.config import DEVICE, NUM_LABELS
+from src.config import DEVICE, NUM_LABELS, BEST_MODEL_NAME
 import os
 
 # Charger le modèle entraîné
-MODEL_PATH = "acc_model.pth"
 feature_dim = 40  # Nombre de MFCCs utilisés
 model = EmotionClassifier(feature_dim, NUM_LABELS).to(DEVICE)
-model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+model.load_state_dict(torch.load(BEST_MODEL_NAME, map_location=DEVICE))
 model.eval()  # Mode évaluation
 
 # Fonction pour prédire l’émotion d’un fichier audio

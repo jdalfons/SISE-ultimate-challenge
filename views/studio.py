@@ -1,7 +1,7 @@
 import streamlit as st
 from st_audiorec import st_audiorec
 
-# from src.model.transcriber import transcribe_audio
+from src.model.transcriber import transcribe_audio
 
 
 def studio():
@@ -23,7 +23,7 @@ def studio():
     with tab1:
         st.header("⬆️ Upload Audio Record")
         st.write("Here you can upload a pre-recorded audio.")
-        audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "ogg"])
+        audio_file = st.file_uploader("Upload an audio file", type=["wav"])
         
         if "audio_file" not in st.session_state:
             st.session_state.audio_file = None
@@ -52,6 +52,7 @@ def studio():
             st.success("Audio recorded successfully !")
             st.session_state.audio_file = audio_file
 
+##############################################"realtime audio record"##############################################
         # Boutons pour démarrer et arrêter l'enregistrement
         # start_button = st.button("Démarrer l'enregistrement")
         # stop_button = st.button("Arrêter l'enregistrement")
@@ -103,24 +104,7 @@ def studio():
         #     emotion_display.write(f"Émotion détectée : {emotion_prediction}")
         #     # time.sleep(0.1)
 
-        # audio.terminate()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # audio.terminate(
 
 
             # stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
@@ -159,6 +143,7 @@ def studio():
             # final_emotion_placeholder.write(f"Émotion finale prédite : {final_emotion}")
 
 
+##############################################"end realtime audio record"##############################################
             
     with tab3:
         st.header("📝 Speech2Text Transcription")
@@ -168,24 +153,24 @@ def studio():
 
         ############################# A décommenté quand ce sera débogué
         if st.button("Transcribe", key="transcribe-button"):
-        #     # Fonction pour transcrire l'audio
-            # transcription = transcribe_audio(st.audio)
+            # Fonction pour transcrire l'audio
+            transcription = transcribe_audio(st.audio)
 
-        #     # Charger et transcrire l'audio
-        #     # audio, rate = load_audio(audio_file_path) # (re)chargement de l'audio si nécessaire
-            # transcription = transcribe_audio(audio_file, sampling_rate=16000)
+            # Charger et transcrire l'audio
+            # audio, rate = load_audio(audio_file_path) # (re)chargement de l'audio si nécessaire
+            transcription = transcribe_audio(audio_file, sampling_rate=16000)
 
-        #     # Afficher la transcription
-            # st.write("Transcription :", transcription)
+            # Afficher la transcription
+            st.write("Transcription :", transcription)
                 
             st.success("Audio registered successfully.")
-        #     if save:
-        #         file_path = "transcript.txt"
+            if save:
+                file_path = "transcript.txt"
     
-        #         # Write the text to the file
-        #         with open(file_path, "w") as file:
-        #             file.write(transcription)
+                # Write the text to the file
+                with open(file_path, "w") as file:
+                    file.write(transcription)
                 
-        #         st.success(f"Text saved to {file_path}")
+                st.success(f"Text saved to {file_path}")
 
             

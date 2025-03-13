@@ -6,7 +6,7 @@ import pandas as pd
 import os
 from datasets import Dataset, DatasetDict
 import pandas as pd
-from config import LABELS  
+from src.config import LABELS  
 
 def load_audio_data(data_dir):
     data = []

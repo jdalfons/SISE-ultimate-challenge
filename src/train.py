@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 from utils.dataset import load_audio_data
 from utils.preprocessing import preprocess_audio, prepare_features, collate_fn
 from model.emotion_classifier import EmotionClassifier
-from src.config import DEVICE, NUM_LABELS
+from config import DEVICE, NUM_LABELS, BEST_MODEL_NAME
 import os
 
 # Charger les données et les séparer en train / test
@@ -51,7 +51,7 @@ def train_classifier(classifier, train_loader, test_loader, epochs=20):
 
         if train_acc > best_accuracy:
             best_accuracy = train_acc
-            torch.save(classifier.state_dict(), "best_model.pth")
+            torch.save(classifier.state_dict(), BEST_MODEL_NAME)
             print(f"✔️ Nouveau meilleur modèle sauvegardé ! Accuracy: {best_accuracy:.4f}")
 
         print(f"📢 Epoch {epoch+1}/{epochs} - Loss: {total_loss:.4f} - Accuracy: {train_acc:.4f}")
