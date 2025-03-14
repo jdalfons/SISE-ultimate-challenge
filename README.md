@@ -5,6 +5,7 @@ emoji: "🎤"
 colorFrom: "blue"
 colorTo: "green"
 sdk: "streamlit"
+sdk: docker
 app_file: "app.py"
 pinned: true
 ---
@@ -54,7 +55,7 @@ Pour exécuter ce projet localement, suivez ces étapes :
 
 2. Exécutez le conteneur Docker :
     ```sh
-    docker run -p 8501:8501 sise-ultimate-challenge
+    docker run -p 7860:7860 sise-ultimate-challenge
     ```
 ## Utilisation
 
