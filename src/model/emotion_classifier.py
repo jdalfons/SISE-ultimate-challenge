@@ -1,5 +1,4 @@
-import torch
-import torch.nn as nn
+
 
 # Prédit 33% environ partout (dans le cas 3 classes)
 
@@ -19,17 +18,37 @@ import torch.nn as nn
     
 
 
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class Attention(nn.Module):
+    """Mécanisme d’attention permettant de pondérer l’importance des caractéristiques audio"""
+    def __init__(self, hidden_dim):
+        super(Attention, self).__init__()
+        self.attention_weights = nn.Linear(hidden_dim, 1)
+
+    def forward(self, lstm_output):
+        # lstm_output: (batch_size, sequence_length, hidden_dim)
+        attention_scores = self.attention_weights(lstm_output)  # (batch_size, sequence_length, 1)
+        attention_weights = torch.softmax(attention_scores, dim=1)  # Normalisation softmax
+        weighted_output = lstm_output * attention_weights  # Pondération des features
+        return weighted_output.sum(dim=1)  # Somme pondérée sur la séquence
+
 class EmotionClassifier(nn.Module):
-    def __init__(self, feature_dim, num_labels=3):
+    """Modèle de classification des émotions basé sur BiLSTM et attention"""
+    def __init__(self, feature_dim, num_labels, hidden_dim=128):
         super(EmotionClassifier, self).__init__()
-        self.fc = nn.Linear(feature_dim, num_labels)
-        self.dropout = nn.Dropout(0.3)  # Evite l'overfitting
+        self.lstm = nn.LSTM(feature_dim, hidden_dim, batch_first=True, bidirectional=True)
+        self.attention = Attention(hidden_dim * 2)  # Bidirectionnel → hidden_dim * 2
+        self.fc = nn.Linear(hidden_dim * 2, num_labels)  # Couche de classification finale
 
     def forward(self, x):
-        pooled_output = torch.mean(x, dim=1)  # Moyenne des features audio
-        pooled_output = self.dropout(pooled_output)  # Dropout avant classification
-        logits = self.fc(pooled_output)
-        return logits  
+        lstm_out, _ = self.lstm(x)  # (batch_size, sequence_length, hidden_dim*2)
+        attention_out = self.attention(lstm_out)  # (batch_size, hidden_dim*2)
+        logits = self.fc(attention_out)  # (batch_size, num_labels)
+        return logits
+
 
 
 
