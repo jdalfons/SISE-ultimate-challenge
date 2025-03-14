@@ -1,6 +1,6 @@
 import os
 from datasets import Dataset
-from src.config import LABELS
+from config import LABELS
 import pandas as pd
 
 def load_audio_data(data_dir):

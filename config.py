@@ -21,5 +21,5 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MODEL_NAME = "facebook/wav2vec2-large-xlsr-53-french"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
-BEST_MODEL_NAME = os.path.join(BASE_DIR, "..", "best_model.pth")  # Monte d'un niveau pour aller à la racine
+BEST_MODEL_NAME = os.path.join(BASE_DIR, "model","fr-speech-emotion-model.pth")  # Monte d'un niveau pour aller à la racine
 

@@ -3,8 +3,8 @@ import soundfile as sf
 import torch
 import torchaudio
 import numpy as np
-from src.model.feature_extractor import processor  # type: ignore
-from src.config import DEVICE
+from model.feature_extractor import processor  # type: ignore
+from config import DEVICE
 
 # Resampler pour convertir en 16kHz
 resampler = torchaudio.transforms.Resample(orig_freq=48_000, new_freq=16_000)

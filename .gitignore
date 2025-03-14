@@ -180,7 +180,7 @@ old/
 *.wav
 data/*
 *.pth
-
+old/
 # Mac
 .DS_Store
 .idea
