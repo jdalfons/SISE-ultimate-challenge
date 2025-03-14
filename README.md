@@ -1,3 +1,14 @@
+```yaml
+---
+title: "SISE Ultimate Challenge"
+emoji: "🎤"
+colorFrom: "blue"
+colorTo: "green"
+sdk: "streamlit"
+app_file: "app.py"
+pinned: true
+---
+```
 # SISE  Ultimate Challenge
 ![Logo du Ultimate Challenge SISE](img/logo_01.png)
 
@@ -15,6 +26,7 @@ Ce projet est un tableau de bord basé sur Streamlit pour analyser les journaux 
 
 ## Installation
 
+### Locale
 Pour exécuter ce projet localement, suivez ces étapes :
 
 1. Clonez le dépôt :
@@ -34,6 +46,16 @@ Pour exécuter ce projet localement, suivez ces étapes :
     pip install -r requirements.txt
     ```
 
+### Docker
+1. Construisez l'image Docker :
+    ```sh
+    docker build -t sise-ultimate-challenge .
+    ```
+
+2. Exécutez le conteneur Docker :
+    ```sh
+    docker run -p 8501:8501 sise-ultimate-challenge
+    ```
 ## Utilisation
 
 Pour démarrer l'application Streamlit, exécutez la commande suivante :

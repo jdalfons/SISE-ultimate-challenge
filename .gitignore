@@ -179,10 +179,11 @@ dataset/
 old/
 *.wav
 data/*
-*.pth
+# *.pth
 old/
 # Mac
 .DS_Store
 .idea
 wav2vec2_emotion/
 dataset/
+*.csv
