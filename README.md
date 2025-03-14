@@ -1,5 +1,5 @@
 # SISE  Ultimate Challenge
-![Logo du Ultimate Challenge SISE](img/logo.png)
+![Logo du Ultimate Challenge SISE](img/logo_01.png)
 
 Ceci est le Ultimate Challenge pour le Master SISE.
 
