@@ -4,8 +4,8 @@ import torch
 import librosa
 import numpy as np
 from model.emotion_classifier import EmotionClassifier
-from src.utils.preprocessing import collate_fn
-from src.config import DEVICE, NUM_LABELS, BEST_MODEL_NAME
+from utils.preprocessing import collate_fn
+from config import DEVICE, NUM_LABELS, BEST_MODEL_NAME
 
 # Charger le modèle entraîné
 feature_dim = 40  # Nombre de MFCCs utilisés

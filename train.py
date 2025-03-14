@@ -10,7 +10,7 @@ from config import DEVICE, NUM_LABELS, BEST_MODEL_NAME
 import os
 
 # Charger les données et les séparer en train / test
-data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
+data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "dataset"))
 ds = load_audio_data(data_dir)
 
 # Prétraitement
