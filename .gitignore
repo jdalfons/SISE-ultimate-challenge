@@ -185,3 +185,4 @@ old/
 .DS_Store
 .idea
 wav2vec2_emotion/
+dataset/
