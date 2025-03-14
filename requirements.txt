@@ -15,3 +15,5 @@ scikit-learn
 huggingface
 huggingface_hub
 pyaudio
+streamlit_audiorec
+dotenv

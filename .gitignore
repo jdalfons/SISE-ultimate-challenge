@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.idea/
 
 # C extensions
 *.so
@@ -178,6 +179,10 @@ dataset/
 old/
 *.wav
 data/*
-
+*.pth
+old/
 # Mac
 .DS_Store
+.idea
+wav2vec2_emotion/
+dataset/
