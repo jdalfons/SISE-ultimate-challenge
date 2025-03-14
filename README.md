@@ -1,11 +1,10 @@
 ```yaml
 ---
-title: "SISE Ultimate Challenge"
-emoji: "🎤"
-colorFrom: "blue"
-colorTo: "green"
+title: SISE Ultimate Challenge
+emoji: 🎤
+colorFrom: blue
+colorTo: red
 sdk: docker
-app_file: "app.py"
 pinned: true
 ---
 ```
