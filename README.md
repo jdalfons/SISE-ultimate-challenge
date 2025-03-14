@@ -1,13 +1,12 @@
-```yaml
 ---
-title: Sise Challenge
+title: Sise Ultimate Challenge
 emoji: 🎤
 colorFrom: yellow
 colorTo: green
 sdk: docker
 pinned: false
 ---
-```
+
 # SISE  Ultimate Challenge
 ![Logo du Ultimate Challenge SISE](img/logo_01.png)
 
