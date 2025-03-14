@@ -26,6 +26,7 @@ Ce projet est un tableau de bord basé sur Streamlit pour analyser les journaux 
 
 ## Installation
 
+### Locale
 Pour exécuter ce projet localement, suivez ces étapes :
 
 1. Clonez le dépôt :
@@ -44,15 +45,17 @@ Pour exécuter ce projet localement, suivez ces étapes :
     ```sh
     pip install -r requirements.txt
     ```
-    4. Construisez l'image Docker :
-        ```sh
-        docker build -t sise-ultimate-challenge .
-        ```
 
-    5. Exécutez le conteneur Docker :
-        ```sh
-        docker run -p 8501:8501 sise-ultimate-challenge
-        ```
+### Docker
+1. Construisez l'image Docker :
+    ```sh
+    docker build -t sise-ultimate-challenge .
+    ```
+
+2. Exécutez le conteneur Docker :
+    ```sh
+    docker run -p 8501:8501 sise-ultimate-challenge
+    ```
 ## Utilisation
 
 Pour démarrer l'application Streamlit, exécutez la commande suivante :
