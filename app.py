@@ -15,9 +15,11 @@ from predict import predict_emotion
 # pip install streamlit-audiorec
 from st_audiorec import st_audiorec
 
+AUDIO_WAV = 'audio/wav'
+MAX_FILE_SIZE_MB = 10
 # Page configuration
 st.set_page_config(
-    page_title="Emotion Analyser",
+    page_title="Emotional Report Analyzer",
     page_icon="🎤",
     layout="wide"
 )
@@ -107,8 +109,9 @@ if st.session_state.needs_rerun:
     st.session_state.needs_rerun = False
     st.rerun()  # Using st.rerun() instead of experimental_rerun
 
-# Main App Layout
-st.image("./img/logo_01.png", width=400)
+col_logo, col_name = st.columns([3, 1])
+col_logo.image("./img/logo_01.png", width=400)
+col_name.title("Emotional Report")
 
 # Create two columns for the main layout
 col1, col2 = st.columns([1, 1])
@@ -147,12 +150,16 @@ with col1:
     with tab2:
         uploaded_file = st.file_uploader("Upload an audio file (WAV format)", type=['wav'])
         
-        if uploaded_file is not None:
-            # Save the uploaded file to a temporary location
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-                tmp_file.write(uploaded_file.getbuffer())
-                tmp_file_path = tmp_file.name
-            
+        if uploaded_file is not None and uploaded_file.type == AUDIO_WAV and uploaded_file.size < MAX_FILE_SIZE_MB * 1_000_000:
+            try:
+                # Save the uploaded file to a temporary location
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
+                    tmp_file.write(uploaded_file.getbuffer())
+                    tmp_file_path = tmp_file.name
+            except Exception as e:
+                st.error(f"Error saving uploaded file: {str(e)}")
+                st.error(f"Try to record your voice directly, maybe your storage is locked.")
+                
             st.audio(uploaded_file, format="audio/wav")
             
             # Process button
@@ -169,7 +176,53 @@ with col1:
                     # Set flag for rerun instead of calling experimental_rerun
                     st.success("Audio processed successfully!")
                     st.session_state.needs_rerun = True
+    # Audio History and Analytics Section
+    st.header("Audio History and Analytics")
 
+    if len(st.session_state.audio_history_csv) > 0:
+        # Display a select box to choose from audio history
+        timestamps = st.session_state.audio_history_csv['timestamp'].tolist()
+        selected_timestamp = st.selectbox(
+            "Select audio from history:",
+            options=timestamps,
+            index=len(timestamps) - 1  # Default to most recent
+        )
+        
+        # Update current index when selection changes
+        selected_index = st.session_state.audio_history_csv[
+            st.session_state.audio_history_csv['timestamp'] == selected_timestamp
+        ].index[0]
+        
+        # Only update if different
+        if st.session_state.current_audio_index != selected_index:
+            st.session_state.current_audio_index = selected_index
+            st.session_state.needs_rerun = True
+        
+        # Analytics button
+        if st.button("Run Analytics on Selected Audio"):
+            st.subheader("Analytics Results")
+            
+            # Get the selected audio data
+            selected_data = st.session_state.audio_history_csv.iloc[selected_index]
+            
+            # Display analytics (this is where you would add more sophisticated analytics)
+            st.write(f"Selected Audio: {selected_data['timestamp']}")
+            st.write(f"Emotion: {selected_data['emotion']}")
+            st.write(f"File Path: {selected_data['file_path']}")
+            
+            # Add any additional analytics you want here
+            
+            # Try to play the selected audio
+            try:
+                if os.path.exists(selected_data['file_path']):
+                    st.audio(selected_data['file_path'], format="audio/wav")
+                else:
+                    st.warning("Audio file not found - it may have been deleted or moved.")
+            except Exception as e:
+                st.error(f"Error playing audio: {str(e)}")
+    else:
+        st.info("No audio history available. Record or upload audio to create history.")
+        
 with col2:
     st.header("Results")
     
@@ -196,53 +249,8 @@ with col2:
     else:
         st.info("Record or upload audio to see results")
 
-# Audio History and Analytics Section
-st.header("Audio History and Analytics")
 
-if len(st.session_state.audio_history_csv) > 0:
-    # Display a select box to choose from audio history
-    timestamps = st.session_state.audio_history_csv['timestamp'].tolist()
-    selected_timestamp = st.selectbox(
-        "Select audio from history:",
-        options=timestamps,
-        index=len(timestamps) - 1  # Default to most recent
-    )
-    
-    # Update current index when selection changes
-    selected_index = st.session_state.audio_history_csv[
-        st.session_state.audio_history_csv['timestamp'] == selected_timestamp
-    ].index[0]
-    
-    # Only update if different
-    if st.session_state.current_audio_index != selected_index:
-        st.session_state.current_audio_index = selected_index
-        st.session_state.needs_rerun = True
-    
-    # Analytics button
-    if st.button("Run Analytics on Selected Audio"):
-        st.subheader("Analytics Results")
-        
-        # Get the selected audio data
-        selected_data = st.session_state.audio_history_csv.iloc[selected_index]
-        
-        # Display analytics (this is where you would add more sophisticated analytics)
-        st.write(f"Selected Audio: {selected_data['timestamp']}")
-        st.write(f"Emotion: {selected_data['emotion']}")
-        st.write(f"File Path: {selected_data['file_path']}")
-        
-        # Add any additional analytics you want here
-        
-        # Try to play the selected audio
-        try:
-            if os.path.exists(selected_data['file_path']):
-                st.audio(selected_data['file_path'], format="audio/wav")
-            else:
-                st.warning("Audio file not found - it may have been deleted or moved.")
-        except Exception as e:
-            st.error(f"Error playing audio: {str(e)}")
-else:
-    st.info("No audio history available. Record or upload audio to create history.")
 
 # Footer
 st.markdown("---")
-st.caption("Audio Emotion Analyzer - Processes audio in 10-second segments and predicts emotions")
+st.caption("Emotional Report Analyzer - Processes audio in 10-second segments and predicts emotions")
