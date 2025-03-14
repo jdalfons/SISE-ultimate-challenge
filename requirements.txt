@@ -16,3 +16,4 @@ huggingface
 huggingface_hub
 pyaudio
 dotenv
+streamlit-audiorec
